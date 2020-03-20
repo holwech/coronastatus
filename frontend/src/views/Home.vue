@@ -5,8 +5,8 @@
     </div>
     <div class="container">
       <div class="row">
-        <div class="col-6" id="plot"></div>
-        <div class="col-6"></div>
+        <div class="col-10" id="plot"></div>
+        <div class="col-2">Test</div>
       </div>
     </div>
   </div>
@@ -14,15 +14,15 @@
 
 <script>
 import plotly from 'plotly.js-dist';
-import plots from '../plots/test_corona.json';
+import plots from '../data/data.json';
 import Vue from 'vue';
 import Component from 'vue-class-component';
 
 @Component
 export default class Home extends Vue {
   mounted() {
-    console.log(plots);
-    const plot = JSON.parse(plots['test']);
+    console.log(plots['figure_1']);
+    const plot = JSON.parse(plots['plots']['figure_1']);
     plot['config'] = {
       responsive: true,
     }
@@ -33,6 +33,6 @@ export default class Home extends Vue {
 
 <style>
 .item-style {
-  height: 500px;
+  height: 600px;
 }
 </style>
