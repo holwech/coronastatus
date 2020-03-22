@@ -6,113 +6,87 @@
     <div class="container">
       <div class="data-element">
         <div class="row">
-          <div class="col-12">
-            <h2>Looking at confirmed cases of COVID-19</h2>
-            <p>
-              Looking at the confirmed cases of COVID-19, it might seem the situation in China is significantly more severe than the rest of the world.
-              As we will see below, the reality is much different...
-              <br /><br /> NOTE: The plots are interactive and exploration is encouraged! Click on the legend names to toggle lines off or on.
-            </p>
-            <hr>
+          <div class="row">
+            <div class="col-12 center">
+              <h2 style="margin:0px;">Summary</h2>
+              <hr>
+            </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-12" id="plot1"></div>
+          <div class="col-6">
+            <div class="row">
+              <div class="row">
+                <div class="col-6 single-number-container">
+                  <h1 class="single-number">{{stats["num_countries_over_5_deaths"]}}</h1><p class='small-text'>countries with more than 5 deaths<br/></p>
+                </div>
+                <div class="col-6">
+                  <h1 class="single-number">{{stats["total_deaths"]}}</h1>
+                  <span style="color:red;">+{{stats["total_deaths_change"]}}</span>
+                  <p class='small-text'>Total deaths globally<br/></p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-2">TEST</div>
+                <div class="col-2">TEST</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-6" id="status-plot"> </div>
         </div>
       </div>
-      <div class="data-element">
-        <div class="row">
-          <div class="col-12">
-            <h2>Lack of good data</h2>
-            <p>
-              Looking at the confirmed cases of COVID-19, it might seem the situation in China is significantly more severe than the rest of the world.
-              As we will see below, the reality is much different...
-              <br /><br /> NOTE: The plots are interactive and exploration is encouraged!
-            </p>
-            <hr>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-12" id="plot2"></div>
-        </div>
+      <div class="row">
+        <div class="col-12 center" style="padding-bottom: 50px;"><h2>Scroll down for more</h2></div>
       </div>
-      <div class="data-element">
-        <div class="row">
-          <div class="col-12">
-            <h2>Looking at confirmed cases of COVID-19</h2>
-            <p>
-              Looking at the confirmed cases of COVID-19, it might seem the situation in China is significantly more severe than the rest of the world.
-              As we will see below, the reality is much different...
-              <br /><br /> NOTE: The plots are interactive and exploration is encouraged!
-            </p>
-            <hr>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-12" id="plot3"></div>
-        </div>
-      </div>
-      <div class="data-element">
-        <div class="row">
-          <div class="col-12">
-            <h2>Looking at confirmed cases of COVID-19</h2>
-            <p>
-              Looking at the confirmed cases of COVID-19, it might seem the situation in China is significantly more severe than the rest of the world.
-              As we will see below, the reality is much different...
-              <br /><br /> NOTE: The plots are interactive and exploration is encouraged!
-            </p>
-            <hr>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-12" id="plot4"></div>
-        </div>
-      </div>
-      <div class="data-element">
-        <div class="row">
-          <div class="col-12">
-            <h2>Looking at confirmed cases of COVID-19</h2>
-            <p>
-              Looking at the confirmed cases of COVID-19, it might seem the situation in China is significantly more severe than the rest of the world.
-              As we will see below, the reality is much different...
-              <br /><br /> NOTE: The plots are interactive and exploration is encouraged!
-            </p>
-            <hr>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-12" id="plot5"></div>
-        </div>
-      </div>
+      <DataElement :num="1">
+        <div v-html="content[0]"></div>
+        <template v-slot:footer>
+          <p v-if="isMobile" style="color:red;">
+            For mobile users - Click the lines to reveal country.
+          </p>
+        </template>
+      </DataElement>
+      <DataElement :num="2">
+        <div v-html="content[1]"></div>
+      </DataElement>
+      <DataElement :num="3">
+        <div v-html="content[2]"></div>
+      </DataElement>
+      <DataElement :num="4">
+        <div v-html="content[3]"></div>
+      </DataElement>
+      <DataElement :num="5">
+        <div v-html="content[4]"></div>
+      </DataElement>
     </div>
   </div>
 </template>
 
 <script>
-import plotly from 'plotly.js-dist';
 import data from '../data/data.json';
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import DataElement from '@/components/DataElement';
+import marked from 'marked';
+import { insertPlot } from '@/utils/plotting';
+import info1 from '@/posts/info1.md';
+import info2 from '@/posts/info2.md';
+import info3 from '@/posts/info3.md';
+import info4 from '@/posts/info4.md';
+import info5 from '@/posts/info5.md';
 
-@Component
-export default class Home extends Vue {
-  mounted() {
-    this.insertPlot(1, data);
-    this.insertPlot(2, data);
-    this.insertPlot(3, data);
-    this.insertPlot(4, data);
-    this.insertPlot(5, data);
+@Component({
+  components: {
+    DataElement
   }
+})
+export default class Home extends Vue {
+  stats = data['stats'];
+  isMobile = false;
+  content = [info1, info2, info3, info4, info5].map(info => marked(info));
 
-  insertPlot(number, data) {
-    const plot = JSON.parse(data['plots'][`figure_${number}`]);
-    if (window.screen.availWidth < 800) {
-      plot['layout']['showlegend'] = false;
-    }
-    plot['config'] = {
-      responsive: true,
-    }
-    plotly.newPlot(`plot${number}`, plot);
+  mounted() {
+    console.log(this.converter);
+    this.isMobile = window.screen.availWidth < 800;
+    insertPlot(1, data, 'status-plot', this.isMobile);
   }
 }
 </script>
@@ -122,12 +96,23 @@ export default class Home extends Vue {
   height: 600px;
 }
 
-.data-element {
-  border: 1px solid lightgray;
-  margin-bottom: 50px;
-}
-
 hr {
   border: 0.5px solid lightgray;
+}
+
+.small-text {
+  font-size: 15px;
+}
+
+.single-number-container {
+  padding: 0px;
+}
+
+.single-number {
+  margin: 0px;
+}
+
+.modebar {
+  display: none;
 }
 </style>
