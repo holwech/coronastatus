@@ -19,14 +19,14 @@ def get_color(column, i=0, limit=2000):
     b = round(alphabets[2].index(column.lower()[2]) / 25 * 255)
   return f'rgb({r},{g},{b})', True
 
-def sort_columns_on_last_row(df):
-  sorted_indicies = (-df.loc[df.last_valid_index()]).argsort()
+def sort_columns_on_row(df, index=-1):
+  sorted_indicies = (-df.loc[df.index[index]]).argsort()
   return df[df.columns[sorted_indicies]]
 
-def over_threshold(df, threshold):
-  mask = (df.iloc[-1] > threshold).index[df.iloc[-1] > threshold]
+def over_threshold(df, threshold, index=-1):
+  mask = (df.iloc[index] > threshold).index[df.iloc[index] > threshold]
   over_threshold = df[mask]
-  return sort_columns_on_last_row(over_threshold)
+  return sort_columns_on_row(over_threshold, index)
 
 def shuffled_alphabet():
   alphabets = [list(string.ascii_lowercase), list(string.ascii_lowercase), list(string.ascii_lowercase)]
