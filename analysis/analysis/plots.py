@@ -93,7 +93,7 @@ def top_countries_deaths_over_threshold_and_aligned(deaths):
 
   fig = go.Figure(
     layout=go.Layout(
-      title=go.layout.Title(text=f'Top 6 countries with over {threshold} deaths, aligned with second registered death'),
+      title=go.layout.Title(text=f'Top 6 countries with over {threshold} deaths, aligned with 5th registered death'),
       plot_bgcolor='rgb(255,255,255)',
       yaxis=go.layout.YAxis(
         type='log', showgrid=True, gridwidth=1, gridcolor='rgb(200,200,200)'
@@ -135,7 +135,7 @@ def top_countries_deaths_over_threshold_and_aligned(deaths):
 
   max_count = 0
   for i, column in enumerate(deaths_over_threshold):
-    x, y = utils.get_from_first_occurrence(deaths_over_threshold, column, 1)
+    x, y = utils.get_from_first_occurrence(deaths_over_threshold, column, 5)
     if len(x) > max_count:
       max_count = len(x)
     color, show = utils.get_color(column, i, 6)
@@ -152,7 +152,7 @@ def top_countries_deaths_over_threshold_and_aligned(deaths):
   color, show = utils.get_color('China')
   fig.add_trace(go.Scatter(
     x=np.arange(0, max_count), 
-    y=np.array([2, 2, 4, 7, 11] + deaths_china.values.tolist())[:max_count],
+    y=np.array([5, 7, 11] + deaths_china.values.tolist())[:max_count],
     name='China',
     mode='lines',
     marker_color=color,
@@ -170,7 +170,7 @@ def deaths_over_threshold_and_aligned(deaths):
 
   fig = go.Figure(
     layout=go.Layout(
-      title=go.layout.Title(text=f'Countries with over {threshold} deaths, aligned with second registered death'),
+      title=go.layout.Title(text=f'Countries with over {threshold} deaths, aligned with 5th registered death'),
       plot_bgcolor='rgb(255,255,255)',
       yaxis=go.layout.YAxis(
         type='log', showgrid=True, gridwidth=1, gridcolor='rgb(200,200,200)'
@@ -213,7 +213,7 @@ def deaths_over_threshold_and_aligned(deaths):
   color, show = utils.get_color('China')
   fig.add_trace(go.Scatter(
     x=np.arange(0, len(deaths_china)), 
-    y=np.array([2, 2, 4, 7, 11] + deaths_china.values.tolist()),
+    y=np.array([5, 7, 11] + deaths_china.values.tolist()),
     name='China',
     mode='lines',
     marker_color=color,
@@ -221,7 +221,7 @@ def deaths_over_threshold_and_aligned(deaths):
   ))
 
   for i, column in enumerate(deaths_over_threshold):
-    x, y = utils.get_from_first_occurrence(deaths_over_threshold, column, 1)
+    x, y = utils.get_from_first_occurrence(deaths_over_threshold, column, 5)
     color, show = utils.get_color(column, i, 8)
     fig.add_trace(go.Scatter(
       x=x, 
