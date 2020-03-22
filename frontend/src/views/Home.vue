@@ -41,9 +41,9 @@
         <!-- Country summary -->
         <div class="row">
           <div class="col-2" v-for="item in countryStats" :key="item[0]">
-            <h2 class="single-number">{{item[0]}}</h2>
+            <h3 class="single-number">{{item[0]}}</h3>
             <p style="font-size:20px;">{{item[1]}}<br/></p>
-            <span style="color:red;font-size:15px;">+{{stats["total_deaths_change"]}}</span>
+            <span style="color:red;font-size:15px;">+{{item[2]}}</span>
           </div>
         </div>
         <!-- Status plot -->
@@ -102,9 +102,9 @@ export default class Home extends Vue {
   content = [info1, info2, info3, info4, info5].map(info => marked(info));
 
   get countryStats() {
-    return Object.entries(this.stats['deaths'])
+    return Object.entries(this.stats['change_deaths'])
                  .slice(0,6)
-                 .map((el) => [el[0], el[1], this.stats['change_deaths'][el[0]]]);
+                 .map((el) => [el[0], this.stats['deaths'][el[0]], el[1]]);
   }
 
   mounted() {
