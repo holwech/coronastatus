@@ -8,7 +8,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-12" :id="`plot${num}`"></div>
+      <div class="col-12" :id="`plot_${figureName}`"></div>
     </div>
   </div>
 </template>
@@ -21,13 +21,13 @@ import { insertPlot } from '@/utils/plotting';
 
 @Component
 export default class DataElement extends Vue {
-  @Prop(Number) readonly num!: number;
+  @Prop(String) readonly figureName!: string;
   stats = data['stats'];
   isMobile = false;
 
   mounted() {
     this.isMobile = window.screen.availWidth < 800;
-    insertPlot(this.num, data, undefined, this.isMobile);
+    insertPlot(this.figureName, data, `plot_${this.figureName}`, this.isMobile);
   }
 }
 </script>

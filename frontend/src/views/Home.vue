@@ -1,17 +1,11 @@
 <template>
   <div>
     <div class="headline">
-      <h1>COVID-19 daily update</h1>
+      <h1>COVID-19 daily update</h1> (Last updated: {{stats['last_updated']}})
     </div>
     <div class="container">
       <div class="data-element">
         <div class="row">
-          <div class="row">
-            <div class="col-12 center">
-              <h2 style="margin:0px;">Summary</h2>
-              <hr>
-            </div>
-          </div>
           <!-- Big numbers -->
           <div class="col-6">
             <div class="row">
@@ -32,12 +26,13 @@
               <div class="col-12">
                 <h3 style="margin:0px;">Status</h3>
                 <p style="font-size:16px;">
-                  Steep increase for Italy, Spain and France. US and UK following behind with about a 2 weeks delay.
+                  Steep increase in deaths due to COVID-19 for Italy, Spain and France. US and UK following behind with about a 2 weeks delay. US testing efforts are ramping up rapidly.
                 </p>
               </div>
             </div>
           </div>
         </div>
+        <div class="row"><hr></div>
         <!-- Country summary -->
         <div class="row">
           <div class="col-2" v-for="item in countryStats" :key="item[0]">
@@ -46,15 +41,17 @@
             <span style="color:red;font-size:15px;">+{{item[2]}}</span>
           </div>
         </div>
+        <hr />
         <!-- Status plot -->
         <div class="row">
-          <div class="col-12" id="status-plot"> </div>
+          <div class="col-8" id="status-plot" style="border-right: 1px solid lightgray;margin:-1px;padding-right: 2px;"></div>
+          <div class="col-4" id="status-plot-pie-chart"></div>
         </div>
       </div>
       <div class="row">
         <div class="col-12 center" style="padding-bottom: 50px;"><span class="material-icons" style="font-size: 100px;">keyboard_arrow_down</span></div>
       </div>
-      <DataElement :num="1">
+      <DataElement figureName="figure_1">
         <div v-html="content[0]"></div>
         <template v-slot:footer>
           <p v-if="isMobile" style="color:red;">
@@ -62,16 +59,16 @@
           </p>
         </template>
       </DataElement>
-      <DataElement :num="2">
+      <DataElement figureName="figure_2">
         <div v-html="content[1]"></div>
       </DataElement>
-      <DataElement :num="3">
+      <DataElement figureName="figure_3">
         <div v-html="content[2]"></div>
       </DataElement>
-      <DataElement :num="4">
+      <DataElement figureName="figure_4">
         <div v-html="content[3]"></div>
       </DataElement>
-      <DataElement :num="5">
+      <DataElement figureName="figure_5">
         <div v-html="content[4]"></div>
       </DataElement>
     </div>
@@ -109,7 +106,8 @@ export default class Home extends Vue {
 
   mounted() {
     this.isMobile = window.screen.availWidth < 800;
-    insertPlot(2, data, 'status-plot', this.isMobile);
+    insertPlot('deaths_area', data, 'status-plot', this.isMobile);
+    insertPlot('deaths_pie_chart', data, 'status-plot-pie-chart', this.isMobile);
   }
 }
 </script>
