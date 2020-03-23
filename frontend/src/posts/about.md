@@ -11,7 +11,7 @@ If you find what I done here interesting, you might also like some my other proj
 This website was created using Vue.js and Plotly for charting and presenting the data.
 Analysis is done using Python and the plots are save directly into the frontend project as JSON and parsed in the browser.
 The website is hosted by Netlify.
-The source code is public and can be [found here](https://github.com/holwech/coronastatus).
+The source code is public and can be [found here](https://github.com/holwech/coronastatus), contributions are always welcome :)
   
   
 -- Joachim Holwech
