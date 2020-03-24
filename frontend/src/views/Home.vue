@@ -62,6 +62,9 @@
       <DataElement figureName="figure_2">
         <div v-html="content[1]"></div>
       </DataElement>
+      <DataElement figureName="daily_change">
+        <div v-html="content[5]"></div>
+      </DataElement>
       <DataElement figureName="figure_3">
         <div v-html="content[2]"></div>
       </DataElement>
@@ -87,6 +90,7 @@ import info2 from '@/posts/info2.md';
 import info3 from '@/posts/info3.md';
 import info4 from '@/posts/info4.md';
 import info5 from '@/posts/info5.md';
+import dailyChange from '@/posts/daily_change.md';
 
 @Component({
   components: {
@@ -96,7 +100,7 @@ import info5 from '@/posts/info5.md';
 export default class Home extends Vue {
   stats = data['stats'];
   isMobile = false;
-  content = [info1, info2, info3, info4, info5].map(info => marked(info));
+  content = [info1, info2, info3, info4, info5, dailyChange].map(info => marked(info));
 
   get countryStats() {
     return Object.entries(this.stats['change_deaths'])
