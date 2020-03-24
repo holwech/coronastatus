@@ -44,8 +44,8 @@
         <hr />
         <!-- Status plot -->
         <div class="row">
-          <div class="col-8" id="status-plot" style="border-right: 1px solid lightgray;margin:-1px;padding: 10px;"></div>
-          <div class="col-4" id="status-plot-pie-chart"></div>
+          <div class="col-8" id="status-plot"></div>
+          <div class="col-4" id="status-plot-pie-chart" style="border-left: 1px solid lightgray;margin:-1px;"></div>
         </div>
       </div>
       <div class="row">
@@ -106,8 +106,8 @@ export default class Home extends Vue {
 
   mounted() {
     this.isMobile = window.screen.availWidth < 800;
-    insertPlot('deaths_area', data, 'status-plot', this.isMobile);
-    insertPlot('deaths_pie_chart', data, 'status-plot-pie-chart', this.isMobile);
+    insertPlot('deaths_area', data, 'status-plot');
+    insertPlot('deaths_pie_chart', data, 'status-plot-pie-chart');
   }
 }
 </script>
