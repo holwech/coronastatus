@@ -44,7 +44,7 @@
         <hr />
         <!-- Status plot -->
         <div class="row">
-          <div class="col-8" id="status-plot" style="border-right: 1px solid lightgray;margin:-1px;padding-right: 2px;"></div>
+          <div class="col-8" id="status-plot" style="border-right: 1px solid lightgray;margin:-1px;padding: 10px;"></div>
           <div class="col-4" id="status-plot-pie-chart"></div>
         </div>
       </div>
