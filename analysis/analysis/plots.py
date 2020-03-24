@@ -6,7 +6,7 @@ import utils
 hubei_lockdown = '2020-01-23'
 lombardy_lockdown = '2020-03-08'
 spain_lockdown = '2020-03-14'
-uk_lockdown = '2020-03-20'
+uk_lockdown = '2020-03-23'
 norway_lockdown = '2020-03-12'
 france_lockdown = '2020-03-17'
 
@@ -91,7 +91,7 @@ def countries_deaths_over_threshold(deaths):
   return fig
 
 def top_countries_deaths_over_threshold_and_aligned(deaths):
-  align_on = 25
+  align_on = 50
   deaths_over_threshold = utils.over_threshold(deaths, align_on)
 
   fig = go.Figure(
@@ -148,7 +148,9 @@ def top_countries_deaths_over_threshold_and_aligned(deaths):
 
   for i, column in enumerate(deaths_over_threshold):
     x, y = utils.get_from_first_occurrence(deaths_over_threshold, column, 25)
-    color, show = utils.get_color(column)
+    color, show = utils.get_color(column, i, 6)
+    if not show:
+      break
     fig.add_trace(go.Scatter(
       x=x, 
       y=y,
@@ -430,7 +432,7 @@ def deaths_pie_chart(deaths):
   deaths_merged = deaths_merged.iloc[-1].transpose()
   fig = go.Figure(
     layout=go.Layout(
-      title=go.layout.Title(text=f'Distribution of death tolls'),
+      title=go.layout.Title(text=f'Distribution of deaths by country'),
       paper_bgcolor='rgba(0,0,0,0)',
       plot_bgcolor='rgba(0,0,0,0)',
       legend_orientation="h",
