@@ -452,3 +452,50 @@ def deaths_pie_chart(deaths):
     ]
   )
   return fig
+
+def daily_change(df):
+  interval = 3
+  df_diff = utils.sort_columns_on_row(df).diff().iloc[1:]
+  df_diff = df_diff[df_diff.columns[0:8]]
+  df_diff['Other'] = df_diff[df_diff.columns[8:]].sum(axis=1)
+  df_buckets = pd.DataFrame([], columns=df_diff.columns)
+  for i in range(len(df_diff), 0, -interval):
+      series = df_diff.iloc[(i - interval):i].sum()
+      series.name = df_diff.iloc[i - interval].name
+      df_buckets = df_buckets.append(series)
+  df_buckets = df_buckets.iloc[::-1]
+  fig = go.Figure(
+    layout=go.Layout(
+      title=go.layout.Title(text=f'New deaths in the last {interval} days due to COVID-19'),
+      paper_bgcolor=paper_bgcolor,
+      plot_bgcolor=plot_bgcolor,
+      yaxis=go.layout.YAxis(
+        showgrid=True,
+        automargin=True,
+        gridwidth=1,
+        gridcolor='rgb(220,220,220)',
+        nticks=5
+      ),
+      xaxis=go.layout.XAxis(
+        showgrid=False,
+        automargin=True,
+        gridwidth=1,
+        gridcolor='rgb(220,220,220)',
+        nticks=5,
+      ),
+      margin={
+        'l': 0, 'r': 0, 'pad': 0
+      },
+      barmode='stack'
+    )
+  )
+
+  for i, column in enumerate(df_buckets):
+    color, show = utils.get_color(column)
+    fig.add_trace(go.Bar(
+      x=df_buckets[column].index, 
+      y=df_buckets[column].values,
+      name=column,
+      marker_color=color,
+    ))
+  return fig

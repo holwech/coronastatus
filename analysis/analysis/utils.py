@@ -4,19 +4,19 @@ import numpy as np
 import pandas as pd
 
 alphabets = [
-    ['t', 'i', 'w', 'c', 'd', 'v', 'n', 's', 'l', 'x', 'f', 'j', 'k', 'b', 'g', 'r', 'h', 'z', 'p', 'y', 'm', 'a', 'o', 'e', 'u', 'q'],
-    ['j', 'z', 'r', 's', 'c', 'm', 'q', 'u', 'v', 'd', 'l', 'e', 't', 'n', 'b', 'y', 'a', 'o', 'i', 'h', 'k', 'x', 'w', 'g', 'p', 'f'],
-    ['d', 'p', 'x', 'm', 'r', 'b', 'n', 'i', 'u', 't', 'o', 'q', 'j', 's', 'w', 'g', 'e', 'y', 'v', 'a', 'l', 'h', 'c', 'z', 'k', 'f']
+    ['t', 'w', 'c', 'd', 'v', 'n', 's', 'l', 'x', 'f', 'j', 'k', 'b', 'g', 'r', 'h', 'z', 'p', 'y', 'm', 'a', 'i', 'o', 'e', 'u', 'q'],
+    ['j', 'z', 'r', 's', 'c', 'm', 'p', 'q', 'w', 'u', 'v', 'd', 'l', 'e', 'h', 't', 'n', 'b', 'y', 'a', 'o', 'i', 'k', 'x', 'g', 'f'],
+    ['d', 'p', 'x', 'm', 'r', 'b', 'n', 'u', 't', 'o', 'q', 'j', 's', 'a', 'w', 'g', 'e', 'i', 'y', 'v', 'l', 'h', 'c', 'z', 'k', 'f']
 ]
 
-def get_color(column, i=0, limit=2000):
+def get_color(column, i=0, limit=2000, shift=0):
   if (i > limit or column is 'Other'):
     return 'rgb(150,150,150)', False
-  r = round(alphabets[0].index(column.lower()[0]) / 25 * 255)
-  g = round(alphabets[1].index(column.lower()[1]) / 25 * 255)
+  r = min(round(alphabets[0].index(column.lower()[0]) / 25 * 255) + shift, 255)
+  g = min(round(alphabets[1].index(column.lower()[1]) / 25 * 255) + shift, 255)
   b = 150
   if (len(column) > 2):
-    b = round(alphabets[2].index(column.lower()[2]) / 25 * 255)
+    b = min(round(alphabets[2].index(column.lower()[3]) / 25 * 255) + shift, 255)
   return f'rgb({r},{g},{b})', True
 
 def sort_columns_on_row(df, index=-1):
