@@ -466,7 +466,7 @@ def daily_change(df):
   df_buckets = df_buckets.iloc[::-1]
   fig = go.Figure(
     layout=go.Layout(
-      title=go.layout.Title(text=f'New deaths in the last {interval} days due to COVID-19'),
+      title=go.layout.Title(text=f'Sum of new deaths in {interval} day intervals due to COVID-19'),
       paper_bgcolor=paper_bgcolor,
       plot_bgcolor=plot_bgcolor,
       yaxis=go.layout.YAxis(
