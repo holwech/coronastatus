@@ -26,7 +26,8 @@
               <div class="col-12">
                 <h3 style="margin:0px;">Status</h3>
                 <p style="font-size:16px;">
-                  Steep increase in deaths due to COVID-19 for Italy, Spain and France. US and UK following behind with about a 2 weeks delay. US testing efforts are ramping up rapidly.
+                  Spain has passed China in number of deaths and for the first time is increasing faster than Italy.
+                  US and UK following behind with about a 2 weeks delay. US testing efforts are ramping up rapidly.
                 </p>
               </div>
             </div>
@@ -74,6 +75,11 @@
       <DataElement figureName="figure_5">
         <div v-html="content[4]"></div>
       </DataElement>
+      <row>
+        <div class='col-12'>
+          <Disqus></Disqus>
+        </div>
+      </row>
     </div>
   </div>
 </template>
@@ -83,6 +89,7 @@ import data from '../data/data.json';
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import DataElement from '@/components/DataElement';
+import Disqus from '@/components/Disqus';
 import marked from 'marked';
 import { insertPlot } from '@/utils/plotting';
 import info1 from '@/posts/info1.md';
@@ -94,7 +101,8 @@ import dailyChange from '@/posts/daily_change.md';
 
 @Component({
   components: {
-    DataElement
+    DataElement,
+    Disqus
   }
 })
 export default class Home extends Vue {
