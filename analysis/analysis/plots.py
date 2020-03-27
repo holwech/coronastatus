@@ -18,13 +18,18 @@ def confirmed_cases_over_threshold(confirmed):
   confirmed_over_threshold = utils.over_threshold(confirmed, threshold)
   fig = go.Figure(
     layout=go.Layout(
-      title=go.layout.Title(text=f'Countries with over {threshold} confirmed cases due to COVID-19'),
+      title=go.layout.Title(text=f'Countries with over {threshold} positive cases of COVID-19'),
       paper_bgcolor=paper_bgcolor,
       plot_bgcolor=plot_bgcolor,
+      font=dict(
+        family="Lato, Helvetica",
+        color="#333447"
+      ),
       yaxis=go.layout.YAxis(
         showgrid=True,
         automargin=True,
         gridwidth=1,
+        nticks=5,
         gridcolor='rgb(220,220,220)'
       ),
       xaxis=go.layout.XAxis(
@@ -57,9 +62,13 @@ def countries_deaths_over_threshold(deaths):
   confirmed_over_threshold = utils.over_threshold(deaths, threshold)
   fig = go.Figure(
     layout=go.Layout(
-      title=go.layout.Title(text=f'Countries with over {threshold} confirmed cases due to COVID-19'),
+      title=go.layout.Title(text=f'Countries with over {threshold} confirmed deaths cases due to COVID-19'),
       paper_bgcolor=paper_bgcolor,
       plot_bgcolor=plot_bgcolor,
+      font=dict(
+        family="Lato, Helvetica",
+        color="#333447"
+      ),
       yaxis=go.layout.YAxis(
         showgrid=True,
         automargin=True,
@@ -96,9 +105,13 @@ def top_countries_deaths_over_threshold_and_aligned(deaths):
 
   fig = go.Figure(
     layout=go.Layout(
-      title=go.layout.Title(text=f'Countries aligned on the {align_on}th registered death'),
+      title=go.layout.Title(text=f'Number of deaths aligned on the {align_on}th registered death'),
       paper_bgcolor=paper_bgcolor,
       plot_bgcolor=plot_bgcolor,
+      font=dict(
+        family="Lato, Helvetica",
+        color="#333447"
+      ),
       yaxis=go.layout.YAxis(
         type='log',
         showgrid=True,
@@ -110,6 +123,7 @@ def top_countries_deaths_over_threshold_and_aligned(deaths):
       xaxis=go.layout.XAxis(
         showgrid=False,
         automargin=True,
+        title_text=f'Number of days since {align_on}th death',
         range=[0, len(deaths) - 30]
       ),
       margin={
@@ -170,13 +184,19 @@ def deaths_over_threshold_and_aligned(deaths):
 
   fig = go.Figure(
     layout=go.Layout(
-      title=go.layout.Title(text=f'Countries with over {threshold} deaths, aligned on {align_on}th registered death'),
+      title=go.layout.Title(text=f'Number of deaths aligned on the {align_on}th registered death'),
       paper_bgcolor='rgba(0,0,0,0)',
       plot_bgcolor='rgba(0,0,0,0)',
+      font=dict(
+        family="Lato, Helvetica",
+        color="#333447"
+      ),
       xaxis=go.layout.XAxis(
         showgrid=False,
         gridwidth=1,
         gridcolor='rgb(220,220,220)',
+        title_text=f'Number of days since {align_on}th death',
+        range=[0, len(deaths) - 25]
       ),
       yaxis=go.layout.YAxis(
         exponentformat='power',
@@ -237,16 +257,20 @@ def deaths_over_threshold_and_aligned(deaths):
 def aligned_on_lockdown(deaths):
   latest_lockdown = uk_lockdown
   lockdown_index = np.where(pd.to_datetime(deaths.index).values == np.datetime64(pd.to_datetime(latest_lockdown)))[0][0]
-  cutoff_begin = 40
+  cutoff_begin = 50
   cutoff_end = 70
-  y_zoom_in_range = [0, 800]
+  y_zoom_in_range = [0, 1000]
   current_max = max(deaths.iloc[-1])
 
   fig = go.Figure(
     layout=go.Layout(
-      title=go.layout.Title(text=f'Number of deaths due to COVID-19 when countries initiated lockdown'),
+      title=go.layout.Title(text=f'Death count of countries aligned on date of lock down'),
       paper_bgcolor='rgba(0,0,0,0)',
       plot_bgcolor='rgba(0,0,0,0)',
+      font=dict(
+        family="Lato, Helvetica",
+        color="#333447"
+      ),
       yaxis=go.layout.YAxis(
         showgrid=True,
         gridwidth=1, 
@@ -254,9 +278,11 @@ def aligned_on_lockdown(deaths):
         range=y_zoom_in_range
       ),
       xaxis=go.layout.XAxis(
+        showticklabels=False,
         showgrid=True, 
         gridwidth=1, 
         gridcolor='rgb(220,220,220)',
+        nticks=5,
         range = [cutoff_begin, cutoff_end],
       ),
       margin={
@@ -382,6 +408,10 @@ def deaths_area(deaths):
       title=go.layout.Title(text=f'Total deaths due to COVID-19'),
       paper_bgcolor='rgba(0,0,0,0)',
       plot_bgcolor='rgba(0,0,0,0)',
+      font=dict(
+        family="Lato, Helvetica",
+        color="#333447"
+      ),
       yaxis=go.layout.YAxis(
         showgrid=True,
         gridwidth=1,
@@ -435,6 +465,10 @@ def deaths_pie_chart(deaths):
       title=go.layout.Title(text=f'Distribution of deaths by country'),
       paper_bgcolor='rgba(0,0,0,0)',
       plot_bgcolor='rgba(0,0,0,0)',
+      font=dict(
+        family="Lato, Helvetica",
+        color="#333447"
+      ),
       legend_orientation="h",
       margin={
         'l': 0, 'r': 0, 'pad': 0
@@ -453,8 +487,7 @@ def deaths_pie_chart(deaths):
   )
   return fig
 
-def daily_change(df):
-  interval = 3
+def daily_change(df, interval=1):
   df_diff = utils.sort_columns_on_row(df).diff().iloc[1:]
   df_diff = df_diff[df_diff.columns[0:8]]
   df_diff['Other'] = df_diff[df_diff.columns[8:]].sum(axis=1)
@@ -466,9 +499,13 @@ def daily_change(df):
   df_buckets = df_buckets.iloc[::-1]
   fig = go.Figure(
     layout=go.Layout(
-      title=go.layout.Title(text=f'Sum of new deaths in {interval} day intervals due to COVID-19'),
+      title=go.layout.Title(text=f'Sum of new deaths every {interval} day due to COVID-19'),
       paper_bgcolor=paper_bgcolor,
       plot_bgcolor=plot_bgcolor,
+      font=dict(
+        family="Lato, Helvetica",
+        color="#333447"
+      ),
       yaxis=go.layout.YAxis(
         showgrid=True,
         automargin=True,
