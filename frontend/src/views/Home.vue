@@ -53,7 +53,7 @@
         <div class="col-12 center" style="padding-bottom: 50px;"><span class="material-icons" style="font-size: 100px;">keyboard_arrow_down</span></div>
       </div>
       <DataElement figureName="figure_1">
-        <div v-html="content[0]"></div>
+        <div class="left" v-html="content[0]"></div>
         <template v-slot:footer>
           <p v-if="isMobile" style="color:red;">
             For mobile users - Click the lines to reveal country.
@@ -61,25 +61,28 @@
         </template>
       </DataElement>
       <DataElement figureName="figure_2">
-        <div v-html="content[1]"></div>
+        <div class="left" v-html="content[1]"></div>
       </DataElement>
       <DataElement figureName="daily_change">
-        <div v-html="content[5]"></div>
+        <div class="left" v-html="content[5]"></div>
+      </DataElement>
+      <DataElement figureName="daily_change2">
+        <div class="left" v-html="content[6]"></div>
       </DataElement>
       <DataElement figureName="figure_3">
-        <div v-html="content[2]"></div>
+        <div class="left" v-html="content[2]"></div>
       </DataElement>
       <DataElement figureName="figure_4">
-        <div v-html="content[3]"></div>
+        <div class="left" v-html="content[3]"></div>
       </DataElement>
       <DataElement figureName="figure_5">
-        <div v-html="content[4]"></div>
+        <div class="left" v-html="content[4]"></div>
       </DataElement>
-      <row>
+      <div class="row">
         <div class='col-12'>
           <Disqus></Disqus>
         </div>
-      </row>
+      </div>
     </div>
   </div>
 </template>
@@ -98,6 +101,7 @@ import info3 from '@/posts/info3.md';
 import info4 from '@/posts/info4.md';
 import info5 from '@/posts/info5.md';
 import dailyChange from '@/posts/daily_change.md';
+import dailyChange2 from '@/posts/daily_change2.md';
 
 @Component({
   components: {
@@ -108,7 +112,7 @@ import dailyChange from '@/posts/daily_change.md';
 export default class Home extends Vue {
   stats = data['stats'];
   isMobile = false;
-  content = [info1, info2, info3, info4, info5, dailyChange].map(info => marked(info));
+  content = [info1, info2, info3, info4, info5, dailyChange, dailyChange2].map(info => marked(info));
 
   get countryStats() {
     return Object.entries(this.stats['change_deaths'])

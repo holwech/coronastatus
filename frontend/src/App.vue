@@ -5,14 +5,20 @@
       <router-link to="/about">About</router-link>
     </div>
     <router-view/>
+    <Footer></Footer>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import Footer from '@/components/Footer.vue';
 
-@Component
+@Component({
+  components: {
+    Footer
+  }
+})
 export default class App extends Vue { }
 </script>
 
