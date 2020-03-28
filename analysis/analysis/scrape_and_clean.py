@@ -1,9 +1,4 @@
 import pandas as pd
-import requests
-import zipfile
-import re
-import os
-import glob
 import stats
 import json
 import plots
