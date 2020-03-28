@@ -1,4 +1,4 @@
-## Using deaths as a measurement
+## Using death tolls as a measurement
 In the current situation, confirmed cases of COVID-19 through testing is not useful for understanding the development of this pandemic.
 There is a severe lack of testing supplies and capasity globally, something which has forced most countries to prioritize their testing efforts towards a select number of people.  
 

@@ -12,7 +12,7 @@
               <div class="col-6 single-number-container">
                 <h1 class="single-number">{{stats["num_countries_over_5_deaths"]}}</h1>
                 <span style="color:red;">+{{stats["num_countries_over_5_deaths_change"]}}</span>
-                <p class='small-text'>countries with more than 5 deaths<br/></p>
+                <p class='small-text'>Countries with more than 5 deaths<br/></p>
               </div>
               <div class="col-6">
                 <h1 class="single-number">{{stats["total_deaths"]}}</h1>
