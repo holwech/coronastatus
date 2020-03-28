@@ -1,3 +1,5 @@
+name: Automated data update
+
 on:
   schedule:
     - cron:  '* * * * *'
