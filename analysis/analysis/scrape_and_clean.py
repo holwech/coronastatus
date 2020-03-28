@@ -48,5 +48,5 @@ data['plots']['daily_change2'] = fig.to_json()
 
 data['stats'] = stats.calc_stats(deaths)
 
-with open('../../frontend/src/data/data.json', 'w') as f:
+with open('frontend/src/data/data.json', 'w') as f:
     json.dump(data, f)
