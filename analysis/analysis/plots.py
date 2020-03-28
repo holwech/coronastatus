@@ -51,6 +51,8 @@ def confirmed_cases_over_threshold(confirmed):
       x=confirmed_over_threshold[column].index, 
       y=confirmed_over_threshold[column].values,
       name=column,
+      hoverinfo='none',
+      hovertemplate = 'Positive cases: %{y}<br>Date: %{x}',
       marker_color=color,
       line=dict(width=1.5, dash='solid' if show else 'dot')
     ))
@@ -94,6 +96,8 @@ def countries_deaths_over_threshold(deaths):
       x=confirmed_over_threshold[column].index, 
       y=confirmed_over_threshold[column].values,
       name=column,
+      hoverinfo='none',
+      hovertemplate = 'Total deaths: %{y}<br>Date: %{x}',
       marker_color=color,
       line=dict(width=1.5, dash='solid' if show else 'dot')
     ))
@@ -170,6 +174,8 @@ def top_countries_deaths_over_threshold_and_aligned(deaths):
       y=y,
       name=column,
       mode='lines',
+      hoverinfo='none',
+      hovertemplate = 'Deaths: %{y}<br>Day: %{x}',
       marker_color=color,
       line=dict(width=1.5, dash='solid' if show else 'dot'),
     ))
@@ -248,6 +254,8 @@ def deaths_over_threshold_and_aligned(deaths):
       y=y,
       name=column,
       mode='lines',
+      hoverinfo='none',
+      hovertemplate = 'Total deaths: %{y}<br>Day: %{x}',
       marker_color=color,
       line=dict(width=1.5, dash='solid' if show else 'dot')
     ))
@@ -264,7 +272,7 @@ def aligned_on_lockdown(deaths):
 
   fig = go.Figure(
     layout=go.Layout(
-      title=go.layout.Title(text=f'Death count of countries aligned on date of lock down'),
+      title=go.layout.Title(text=f'Number of deaths aligned on date of lock down for selected countries'),
       paper_bgcolor='rgba(0,0,0,0)',
       plot_bgcolor='rgba(0,0,0,0)',
       font=dict(
@@ -328,6 +336,8 @@ def aligned_on_lockdown(deaths):
     y=y,
     name='China',
     mode='lines',
+    hoverinfo='none',
+    hovertemplate = 'Total deaths: %{y}<br>Day: %{x}',
     marker_color=color,
     line=dict(width=1.5)
   ))
@@ -339,6 +349,8 @@ def aligned_on_lockdown(deaths):
     y=y,
     name='Italy',
     mode='lines',
+    hoverinfo='none',
+    hovertemplate = 'Total deaths: %{y}<br>Day: %{x}',
     marker_color=color,
     line=dict(width=1.5)
   ))
@@ -350,6 +362,8 @@ def aligned_on_lockdown(deaths):
     y=y,
     name='Spain',
     mode='lines',
+    hoverinfo='none',
+    hovertemplate = 'Total deaths: %{y}<br>Day: %{x}',
     marker_color=color,
     line=dict(width=1.5)
   ))
@@ -361,6 +375,8 @@ def aligned_on_lockdown(deaths):
     y=y,
     name='United Kingdom',
     mode='lines',
+    hoverinfo='none',
+    hovertemplate = 'Total deaths: %{y}<br>Day: %{x}',
     marker_color=color,
     line=dict(width=1.5)
   ))
@@ -372,6 +388,8 @@ def aligned_on_lockdown(deaths):
     y=y,
     name='France',
     mode='lines',
+    hoverinfo='none',
+    hovertemplate = 'Total deaths: %{y}<br>Day: %{x}',
     marker_color=color,
     line=dict(width=1.5)
   ))
@@ -383,6 +401,8 @@ def aligned_on_lockdown(deaths):
     y=y,
     name='Norway',
     mode='lines',
+    hoverinfo='none',
+    hovertemplate = 'Total deaths: %{y}<br>Day: %{x}',
     marker_color=color,
     line=dict(width=1.5)
   ))
@@ -434,7 +454,8 @@ def deaths_area(deaths):
   fig.add_trace(go.Scatter(
     x=deaths_lower.index,
     y=deaths_lower.values,
-    hoverinfo='x+y',
+    hoverinfo='none',
+    hovertemplate = 'Total deaths: %{y}<br>Day: %{x}',
     mode='lines',
     name='Other',
     line=dict(width=0, color=color),
@@ -448,6 +469,8 @@ def deaths_area(deaths):
       y=deaths_upper[column].values,
       mode='lines',
       name=column,
+      hoverinfo='none',
+      hovertemplate = 'Total deaths: %{y}<br>Day: %{x}',
       line=dict(width=0, color=color),
       stackgroup='one' # define stack group
     ))
@@ -492,7 +515,9 @@ def daily_change(df, interval=1):
   df_diff = df_diff[df_diff.columns[0:8]]
   df_diff['Other'] = df_diff[df_diff.columns[8:]].sum(axis=1)
   df_buckets = pd.DataFrame([], columns=df_diff.columns)
+  date_ranges = []
   for i in range(len(df_diff), 0, -interval):
+      date_ranges.append([df_diff.iloc[i - interval].name, df_diff.iloc[i - 1].name])
       series = df_diff.iloc[(i - interval):i].sum()
       series.name = df_diff.iloc[i - interval].name
       df_buckets = df_buckets.append(series)
@@ -528,11 +553,16 @@ def daily_change(df, interval=1):
   )
 
   for i, column in enumerate(df_buckets):
+    hovertemplate = 'New deaths: %{y}<br>Date: %{x}'
+    if (interval > 1):
+      hovertemplate = 'New deaths: %{y}<br>Date: ' + date_ranges[i][0] + ' - ' + date_ranges[i][1]
     color, show = utils.get_color(column)
     fig.add_trace(go.Bar(
       x=df_buckets[column].index, 
       y=df_buckets[column].values,
       name=column,
+      hoverinfo='none',
+      hovertemplate = hovertemplate,
       marker_color=color,
     ))
   return fig
