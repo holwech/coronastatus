@@ -1,6 +1,6 @@
 on:
   schedule:
-    - cron:  '0 05 * * *'
+    - cron:  '* * * * *'
 
 jobs:
   update:
