@@ -15,7 +15,7 @@ jobs:
         python-version: '3.6.10'
         architecture: x64
     - run: |
-        pip install numpy pandas plotly
+        pip install numpy pandas plotly requests
         python analysis/analysis/scrape_and_clean.py
     - name: Commit files
       run: |
