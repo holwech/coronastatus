@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
+import plotly.express as px
 import utils
 
 hubei_lockdown = '2020-01-23'
@@ -8,17 +9,18 @@ lombardy_lockdown = '2020-03-08'
 spain_lockdown = '2020-03-14'
 uk_lockdown = '2020-03-23'
 norway_lockdown = '2020-03-12'
+denmark_lockdown = '2020-03-14'
 france_lockdown = '2020-03-17'
 
 paper_bgcolor = 'rgba(0,0,0,0)'
 plot_bgcolor='rgba(0,0,0,0)'
 
 def confirmed_cases_over_threshold(confirmed):
-  threshold = 500
-  confirmed_over_threshold = utils.over_threshold(confirmed, threshold)
+  limit = 25
+  confirmed_over_threshold = utils.sort_columns_on_row(confirmed).iloc[:, :limit]
   fig = go.Figure(
     layout=go.Layout(
-      title=go.layout.Title(text=f'Countries with over {threshold} positive cases of COVID-19'),
+      title=go.layout.Title(text=f'Positive cases of COVID-19 - Top {limit} countries'),
       paper_bgcolor=paper_bgcolor,
       plot_bgcolor=plot_bgcolor,
       font=dict(
@@ -60,11 +62,11 @@ def confirmed_cases_over_threshold(confirmed):
 
 
 def countries_deaths_over_threshold(deaths):
-  threshold = 5
-  confirmed_over_threshold = utils.over_threshold(deaths, threshold)
+  limit = 25
+  confirmed_over_threshold = utils.sort_columns_on_row(deaths).iloc[:, :limit]
   fig = go.Figure(
     layout=go.Layout(
-      title=go.layout.Title(text=f'Countries with over {threshold} confirmed deaths cases due to COVID-19'),
+      title=go.layout.Title(text=f'Deaths due to COVID-19 - Top {limit} countries'),
       paper_bgcolor=paper_bgcolor,
       plot_bgcolor=plot_bgcolor,
       font=dict(
@@ -105,11 +107,12 @@ def countries_deaths_over_threshold(deaths):
 
 def top_countries_deaths_over_threshold_and_aligned(deaths):
   align_on = 50
-  deaths_over_threshold = utils.over_threshold(deaths, align_on)
+  limit = 25
+  deaths_over_threshold = utils.sort_columns_on_row(deaths).iloc[:, :limit]
 
   fig = go.Figure(
     layout=go.Layout(
-      title=go.layout.Title(text=f'Number of deaths aligned on the {align_on}th registered death'),
+      title=go.layout.Title(text=f'Number of deaths aligned on the {align_on}th registered death - Top {limit} countries'),
       paper_bgcolor=paper_bgcolor,
       plot_bgcolor=plot_bgcolor,
       font=dict(
@@ -186,11 +189,12 @@ def top_countries_deaths_over_threshold_and_aligned(deaths):
 def deaths_over_threshold_and_aligned(deaths):
   threshold = 5
   align_on = 5
-  deaths_over_threshold = utils.over_threshold(deaths, threshold)
+  limit = 40
+  deaths_over_threshold = utils.sort_columns_on_row(deaths).iloc[:, :limit]
 
   fig = go.Figure(
     layout=go.Layout(
-      title=go.layout.Title(text=f'Number of deaths aligned on the {align_on}th registered death'),
+      title=go.layout.Title(text=f'Number of deaths aligned on the {align_on}th registered death - Top {limit} countries'),
       paper_bgcolor='rgba(0,0,0,0)',
       plot_bgcolor='rgba(0,0,0,0)',
       font=dict(
@@ -407,6 +411,19 @@ def aligned_on_lockdown(deaths):
     line=dict(width=1.5)
   ))
 
+  x, y = utils.align_series(deaths['Denmark'], denmark_lockdown, latest_lockdown)
+  color, show = utils.get_color('Denmark')
+  fig.add_trace(go.Scatter(
+    x=x, 
+    y=y,
+    name='Denmark',
+    mode='lines',
+    hoverinfo='none',
+    hovertemplate = 'Total deaths: %{y}<br>Day: %{x}',
+    marker_color=color,
+    line=dict(width=1.5)
+  ))
+
   fig.add_trace(go.Scatter(
     x=[lockdown_index, lockdown_index],
     y=[0, current_max],
@@ -511,9 +528,12 @@ def deaths_pie_chart(deaths):
   return fig
 
 def daily_change(df, interval=1):
-  df_diff = utils.sort_columns_on_row(df).diff().iloc[1:]
-  df_diff = df_diff[df_diff.columns[0:8]]
-  df_diff['Other'] = df_diff[df_diff.columns[8:]].sum(axis=1)
+  limit = 10
+  df_sorted = utils.sort_columns_on_row(df).diff().iloc[1:]
+  df_diff = df_sorted.iloc[:, :limit]
+  columns = np.append(np.array(['Other']), df_diff.columns.values)
+  df_diff['Other'] = df_sorted.iloc[:, limit:].sum(axis=1)
+  df_diff = df_diff[columns]
   df_buckets = pd.DataFrame([], columns=df_diff.columns)
   date_ranges = []
   for i in range(len(df_diff), 0, -interval):
@@ -555,7 +575,7 @@ def daily_change(df, interval=1):
   for i, column in enumerate(df_buckets):
     hovertemplate = 'New deaths: %{y}<br>Date: %{x}'
     if (interval > 1):
-      hovertemplate = 'New deaths: %{y}<br>Date: ' + date_ranges[i][0] + ' - ' + date_ranges[i][1]
+      hovertemplate = 'New deaths: %{y}<br>Date: %{x}+' + str(interval - 1)
     color, show = utils.get_color(column)
     fig.add_trace(go.Bar(
       x=df_buckets[column].index, 
@@ -565,4 +585,21 @@ def daily_change(df, interval=1):
       hovertemplate = hovertemplate,
       marker_color=color,
     ))
+  return fig
+
+
+def animated_map(df, iso_alpha_path):
+  iso_alpha = pd.read_csv(iso_alpha_path, delimiter='\t')
+  limit = 25
+  df_flat = utils.sort_columns_on_row(df).iloc[:, :limit].diff().iloc[1:]
+  df_flat = df_flat.iloc[1:].transpose().reset_index().melt(id_vars=['Country/Region'], var_name='Date', value_name='Count')
+  df_flat['Count'] = df_flat['Count'].clip(lower=0)
+  df_flat = df_flat.merge(iso_alpha, on='Country/Region', how='left')
+  fig = px.scatter_geo(df_flat, 
+    locations="iso3",
+    hover_name="Country/Region", size="Count",
+    animation_frame="Date",
+    color='Country/Region',
+    projection="natural earth"
+  )
   return fig

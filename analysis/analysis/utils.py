@@ -15,7 +15,7 @@ def get_color(column, i=0, limit=2000, shift=0):
   r = min(round(alphabets[0].index(column.lower()[0]) / 25 * 255) + shift, 255)
   g = min(round(alphabets[1].index(column.lower()[1]) / 25 * 255) + shift, 255)
   b = 150
-  if (len(column) > 2):
+  if (len(column) > 2 and column[3] != ' '):
     b = min(round(alphabets[2].index(column.lower()[3]) / 25 * 255) + shift, 255)
   return f'rgb({r},{g},{b})', True
 
