@@ -6,39 +6,71 @@
     <div class="container">
       <div class="data-element">
         <div class="row">
-          <!-- Big numbers -->
-          <div class="col-6">
+          <div class="col-12">
             <div class="row">
-              <div class="col-6 single-number-container">
-                <h1 class="single-number">{{stats["num_countries_over_5_deaths"]}}</h1>
-                <span style="color:red;">+{{stats["num_countries_over_5_deaths_change"]}}</span>
-                <p class='small-text'>Countries with more than 5 deaths<br/></p>
+              <div class="col-12">
+                <h2 style="margin:0px;">Summary
+                  <Tooltip>
+                    Legend: <br>
+                    - Yesterday's reported numbers<br>
+                    <span style="color:red;"> - Change from day before</span>
+                  </Tooltip>
+                </h2>
               </div>
-              <div class="col-6">
+            </div>
+            <hr>
+          </div>
+        </div>
+        <div class="row">
+          <!-- Big numbers -->
+          <div class="col-12">
+            <div class="row">
+              <div class="col-3 single-number-container">
+                <h1 class="single-number">{{stats["total_confirmed"]}}</h1>
+                <span style="color:red;">+{{stats["total_confirmed_change"]}}</span>
+                <p class='small-text'>Total confirmed positive<br/></p>
+              </div>
+              <div class="col-3 single-number-container">
+                <h1 class="single-number">{{stats["num_countries_over_limit_confirmed"]}}</h1>
+                <span style="color:red;">+{{stats["num_countries_over_limit_confirmed_change"]}}</span>
+                <p class='small-text'>Countries with more than 500 confirmed positive<br/></p>
+              </div>
+              <div class="col-3 single-number-container">
                 <h1 class="single-number">{{stats["total_deaths"]}}</h1>
                 <span style="color:red;">+{{stats["total_deaths_change"]}}</span>
                 <p class='small-text'>Total deaths globally<br/></p>
               </div>
-            </div>
-          </div>
-          <div class="col-6">
-            <div class="row">
-              <div class="col-12">
-                <h3 style="margin:0px;">Status</h3>
-                <p style="font-size:16px;">
-                  Spain has passed China in number of deaths and for the first time is increasing faster than Italy.
-                  US and UK following behind with about a 2 weeks delay. US testing efforts are ramping up rapidly.
-                </p>
+              <div class="col-3 single-number-container">
+                <h1 class="single-number">{{stats["num_countries_over_5_deaths"]}}</h1>
+                <span style="color:red;">+{{stats["num_countries_over_5_deaths_change"]}}</span>
+                <p class='small-text'>Countries with more than 5 deaths<br/></p>
               </div>
             </div>
           </div>
         </div>
-        <div class="row"><hr></div>
+        <hr>
+        <div class="row">
+          <div class="col-12">
+            <div class="row">
+              <div class="col-12">
+                <h3 style="margin:0px;">Top 6 countries ordered by new fatalities
+                  <Tooltip>
+                    Legend: <br>
+                    - Country name <br>
+                    - Yesterday's total reported deaths <br>
+                    <span style="color:red;"> - Change from day before</span>
+                  </Tooltip>
+                </h3>
+              </div>
+            </div>
+            <hr>
+          </div>
+        </div>
         <!-- Country summary -->
         <div class="row">
           <div class="col-2" v-for="item in countryStats" :key="item[0]">
             <h3 class="single-number">{{item[0]}}</h3>
-            <p style="font-size:20px;">{{item[1]}}<br/></p>
+            <p style="font-size:20px;">{{item[1]}}</p>
             <span style="color:red;font-size:15px;">+{{item[2]}}</span>
           </div>
         </div>
@@ -75,6 +107,9 @@
       <DataElement figureName="figure_4">
         <div class="left" v-html="content[3]"></div>
       </DataElement>
+      <DataElement figureName="peak_deaths">
+        <div class="left" v-html="content[7]"></div>
+      </DataElement>
       <DataElement figureName="figure_5">
         <div class="left" v-html="content[4]"></div>
       </DataElement>
@@ -94,6 +129,7 @@ import Component from 'vue-class-component';
 import DataElement from '@/components/DataElement';
 import Disqus from '@/components/Disqus';
 import marked from 'marked';
+import Tooltip from '@/components/Tooltip';
 import { insertPlot } from '@/utils/plotting';
 import info1 from '@/posts/info1.md';
 import info2 from '@/posts/info2.md';
@@ -102,17 +138,19 @@ import info4 from '@/posts/info4.md';
 import info5 from '@/posts/info5.md';
 import dailyChange from '@/posts/daily_change.md';
 import dailyChange2 from '@/posts/daily_change2.md';
+import peak from '@/posts/peak.md';
 
 @Component({
   components: {
     DataElement,
-    Disqus
+    Disqus,
+    Tooltip
   }
 })
 export default class Home extends Vue {
   stats = data['stats'];
   isMobile = false;
-  content = [info1, info2, info3, info4, info5, dailyChange, dailyChange2].map(info => marked(info));
+  content = [info1, info2, info3, info4, info5, dailyChange, dailyChange2, peak].map(info => marked(info));
 
   get countryStats() {
     return Object.entries(this.stats['change_deaths'])
