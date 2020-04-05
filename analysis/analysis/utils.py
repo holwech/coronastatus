@@ -43,3 +43,20 @@ def align_series(series, lockdown, latest_lockdown):
   x = np.arange(0, delta + len(series)).astype(int)
   y = np.append(np.full((delta / np.timedelta64(1, 'D')).astype(int), None), series.values)
   return x, y
+
+def bucket_values(df, limit=10, interval=1, include_other=True):
+  if limit is None:
+    limit = len(df.columns)
+  df_out = df.iloc[:, :limit]
+  if include_other and limit is not None:
+    columns = np.append(np.array(['Other']), df_out.columns.values)
+    df_out['Other'] = df.iloc[:, limit:].sum(axis=1)
+    df_out = df_out[columns]
+  df_buckets = pd.DataFrame([], columns=df_out.columns)
+  date_ranges = []
+  for i in range(len(df_out), 0, -interval):
+      date_ranges.append([df_out.iloc[i - interval].name, df_out.iloc[i - 1].name])
+      series = df_out.iloc[(i - interval):i].sum()
+      series.name = df_out.iloc[i - interval].name
+      df_buckets = df_buckets.append(series)
+  return df_buckets.iloc[::-1]

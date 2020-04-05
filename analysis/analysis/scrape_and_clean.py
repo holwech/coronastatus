@@ -46,7 +46,10 @@ data['plots']['daily_change'] = fig.to_json()
 fig = plots.daily_change(deaths.loc[pd.to_datetime(deaths.index) >= pd.to_datetime('2020-03-01')], 1)
 data['plots']['daily_change2'] = fig.to_json()
 
-data['stats'] = stats.calc_stats(deaths)
+fig = plots.rate_vs_total(deaths, 10, 5, 'death', limit=40)
+data['plots']['peak_deaths'] = fig.to_json()
+
+data['stats'] = stats.calc_stats(deaths, confirmed)
 
 with open('frontend/src/data/data.json', 'w') as f:
     json.dump(data, f)

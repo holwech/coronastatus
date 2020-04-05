@@ -3,6 +3,7 @@ import numpy as np
 import plotly.graph_objects as go
 import plotly.express as px
 import utils
+from math import log
 
 hubei_lockdown = '2020-01-23'
 lombardy_lockdown = '2020-03-08'
@@ -107,7 +108,7 @@ def countries_deaths_over_threshold(deaths):
 
 def top_countries_deaths_over_threshold_and_aligned(deaths):
   align_on = 50
-  limit = 25
+  limit = 10
   deaths_over_threshold = utils.sort_columns_on_row(deaths).iloc[:, :limit]
 
   fig = go.Figure(
@@ -120,12 +121,11 @@ def top_countries_deaths_over_threshold_and_aligned(deaths):
         color="#333447"
       ),
       yaxis=go.layout.YAxis(
-        type='log',
+        exponentformat='none',
         showgrid=True,
         automargin=True,
         gridwidth=1,
         gridcolor='rgb(220,220,220)',
-        exponentformat='power'
       ),
       xaxis=go.layout.XAxis(
         showgrid=False,
@@ -147,21 +147,21 @@ def top_countries_deaths_over_threshold_and_aligned(deaths):
         direction='left',
         buttons=[
           dict(
-            label="Logarithmic",
-            method="relayout",
-            args=["yaxis.type", 'log']
-          ),
-          dict(
             label="Linear",
             method="relayout",
             args=["yaxis.type", 'lin']
           ),
+          dict(
+            label="Logarithmic",
+            method="relayout",
+            args=["yaxis.type", 'log']
+          ),
         ],
-        pad={"r": 0, "t": 0},
+        pad={"r": 0, "t": 0, "b": 20},
         showactive=True,
         x=0,
         xanchor="left",
-        y=-0.1,
+        y=-0.2,
         yanchor="top"
       )
     ]
@@ -169,7 +169,7 @@ def top_countries_deaths_over_threshold_and_aligned(deaths):
 
   for i, column in enumerate(deaths_over_threshold):
     x, y = utils.get_from_first_occurrence(deaths_over_threshold, column, 25)
-    color, show = utils.get_color(column, i, 6)
+    color, show = utils.get_color(column, i, limit)
     if not show:
       break
     fig.add_trace(go.Scatter(
@@ -209,7 +209,7 @@ def deaths_over_threshold_and_aligned(deaths):
         range=[0, len(deaths) - 25]
       ),
       yaxis=go.layout.YAxis(
-        exponentformat='power',
+        exponentformat='none',
         type='log',
         showgrid=True,
         gridwidth=1,
@@ -240,11 +240,11 @@ def deaths_over_threshold_and_aligned(deaths):
             args=["yaxis.type", 'lin']
           ),
         ],
-        pad={"r": 0, "t": 0},
+        pad={"r": 0, "t": 0, "b": 20},
         showactive=True,
         x=0,
         xanchor="left",
-        y=-0.1,
+        y=-0.2,
         yanchor="top"
       )
     ]
@@ -529,19 +529,8 @@ def deaths_pie_chart(deaths):
 
 def daily_change(df, interval=1):
   limit = 10
-  df_sorted = utils.sort_columns_on_row(df).diff().iloc[1:]
-  df_diff = df_sorted.iloc[:, :limit]
-  columns = np.append(np.array(['Other']), df_diff.columns.values)
-  df_diff['Other'] = df_sorted.iloc[:, limit:].sum(axis=1)
-  df_diff = df_diff[columns]
-  df_buckets = pd.DataFrame([], columns=df_diff.columns)
-  date_ranges = []
-  for i in range(len(df_diff), 0, -interval):
-      date_ranges.append([df_diff.iloc[i - interval].name, df_diff.iloc[i - 1].name])
-      series = df_diff.iloc[(i - interval):i].sum()
-      series.name = df_diff.iloc[i - interval].name
-      df_buckets = df_buckets.append(series)
-  df_buckets = df_buckets.iloc[::-1]
+  df_diff = utils.sort_columns_on_row(df).diff().iloc[1:]
+  df_buckets = utils.bucket_values(df_diff, limit=limit, interval=interval)
   fig = go.Figure(
     layout=go.Layout(
       title=go.layout.Title(text=f'Sum of new deaths every {interval} day due to COVID-19'),
@@ -602,4 +591,68 @@ def animated_map(df, iso_alpha_path):
     color='Country/Region',
     projection="natural earth"
   )
+  return fig
+
+def rate_vs_total(df, x_lower, y_lower, type_name, limit=35, window=7):
+  df = utils.sort_columns_on_row(df)
+  df_diff = df.diff().iloc[1:]
+  df = df.iloc[1:]
+  confirmed = utils.bucket_values(df, limit=limit, include_other=False, interval=window)
+  confirmed_diff = utils.bucket_values(df_diff, limit=limit, include_other=False, interval=window)
+  fig = go.Figure(
+    layout=go.Layout(
+      title=go.layout.Title(text=f'Weekly {type_name} rate vs. total {type_name}s - Top {limit} countries'),
+      paper_bgcolor=paper_bgcolor,
+      plot_bgcolor=plot_bgcolor,
+      font=dict(
+        family="Lato, Helvetica",
+        color="#333447"
+      ),
+      yaxis=go.layout.YAxis(
+        type='log',
+        showgrid=True,
+        automargin=True,
+        title='New deaths',
+        gridwidth=1,
+        range=[log(y_lower)/log(10), log(confirmed_diff.max().max())/log(10)],
+        gridcolor='rgb(220,220,220)'
+      ),
+      xaxis=go.layout.XAxis(
+        type='log',
+        title='Total deaths',
+        showgrid=True,
+        automargin=True,
+        gridwidth=1,
+        gridcolor='rgb(220,220,220)',
+        range=[log(x_lower)/log(10), log(confirmed.max().max())/log(10)],
+        nticks=5
+      ),
+      margin={
+        'l': 0, 'r': 0, 'pad': 0
+      }
+    )
+  )
+
+  for i, column in enumerate(confirmed):
+    confirmed_single = confirmed[confirmed_diff[column] > 0][column]
+    confirmed_diff_single = confirmed_diff[confirmed_diff[column] > 0][column]
+    color, show = utils.get_color(column, i, 8)
+    fig.add_trace(go.Scatter(
+      x=confirmed_single.values, 
+      y=confirmed_diff_single.values,
+      name=column,
+      hoverinfo='none',
+      mode='lines',
+      hovertemplate = 'New deaths: %{y}<br>Total deaths: %{x}',
+      marker_color=color,
+      line=dict(width=1.5, dash='solid' if show else 'dot')
+    ))
+  fig.add_trace(go.Scatter(
+    x=[2, 1000000],
+    y=[1, 100000],
+    name='Time of lockdown',
+    mode="lines",
+    marker_color="red",
+    line=dict(dash="dot", width=4)
+  ))
   return fig
