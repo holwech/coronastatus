@@ -4,4 +4,4 @@ When a country starts dropping off from the mid line, this is a sign that the pe
 For example, we see that China has fallen significantly from the center mid line and is past its peak based on the data we have available.  
 
 This plot was inspired by this [great animated chart](https://aatishb.com/covidtrends/).
-To learn more about what this chart represents, that a look at [this video](https://www.youtube.com/watch?v=54XLXg4fYsc&feature=emb_title).
+To learn more about what this chart represents, have a look at [this video](https://www.youtube.com/watch?v=54XLXg4fYsc&feature=emb_title).
