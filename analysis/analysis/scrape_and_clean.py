@@ -37,7 +37,7 @@ data['plots']['figure_5'] = fig.to_json()
 fig = plots.deaths_area(deaths)
 data['plots']['deaths_area'] = fig.to_json()
 
-fig = plots.deaths_pie_chart(deaths)
+fig = plots.current_distribution(deaths)
 data['plots']['deaths_pie_chart'] = fig.to_json()
 
 fig = plots.daily_change(deaths, 3)

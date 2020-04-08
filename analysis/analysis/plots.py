@@ -435,7 +435,7 @@ def aligned_on_lockdown(deaths):
   return fig
 
 def deaths_area(deaths):
-  threshold = 10
+  threshold = 15
   deaths_sorted = utils.sort_columns_on_row(deaths)
   deaths_upper = deaths_sorted[deaths_sorted.columns[0:threshold]]
   deaths_lower = deaths_sorted[deaths_sorted.columns[threshold:]].sum(axis=1)
@@ -525,6 +525,54 @@ def deaths_pie_chart(deaths):
         )
     ]
   )
+  return fig
+
+def current_distribution(deaths):
+  threshold = 15
+  deaths_sorted = utils.sort_columns_on_row(deaths)
+  deaths_merged = deaths_sorted[deaths_sorted.columns[0:threshold]]
+  deaths_merged['Other'] = deaths_sorted[deaths_sorted.columns[threshold:]].sum(axis=1)
+  deaths_merged = deaths_merged.iloc[-1].sort_values()
+  fig = go.Figure(
+    layout=go.Layout(
+      title=go.layout.Title(text=f'Distribution of deaths by country'),
+      paper_bgcolor='rgba(0,0,0,0)',
+      plot_bgcolor='rgba(0,0,0,0)',
+      font=dict(
+        family="Lato, Helvetica",
+        color="#333447"
+      ),
+      legend_orientation="h",
+      yaxis=go.layout.YAxis(
+        showgrid=False,
+        automargin=True,
+        gridwidth=1,
+        gridcolor='rgb(220,220,220)',
+        side='right'
+      ),
+      xaxis=go.layout.XAxis(
+        showgrid=True,
+        automargin=True,
+        gridwidth=1,
+        gridcolor='rgb(220,220,220)',
+        tickformat=',.0%',
+        range=[0, deaths_merged.max() / deaths_merged.sum()]
+      ),
+      margin={
+        'l': 0, 'r': 0, 'pad': 0
+      }
+    ),
+  )
+  fig.add_trace(go.Bar(
+    y=deaths_merged.index, 
+    x=deaths_merged / deaths_merged.sum(),
+    text=[str(x) + '%' for x in round(deaths_merged / deaths_merged.sum() * 1000) / 10],
+    textposition='auto',
+    marker=dict(
+        color=[utils.get_color(c)[0] for c in deaths_merged.index]
+    ),
+    orientation='h'
+  ))
   return fig
 
 def daily_change(df, interval=1):
