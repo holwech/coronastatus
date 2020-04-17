@@ -18,6 +18,9 @@ plot_bgcolor='rgba(0,0,0,0)'
 
 def confirmed_cases_over_threshold(confirmed):
   limit = 25
+  confirmed = confirmed.assign(EU=confirmed[['Austria', 'Belgium', 'Bulgaria', 'Croatia', 'Cyprus', 'Czechia', 'Denmark',
+    'Estonia', 'Finland', 'France', 'Germany', 'Greece', 'Hungary', 'Ireland', 'Italy', 'Latvia', 'Lithuania', 'Luxembourg',
+    'Malta', 'Netherlands', 'Poland', 'Portugal', 'Romania', 'Slovakia', 'Slovenia', 'Spain', 'Sweden']].sum(axis=1))
   confirmed_over_threshold = utils.sort_columns_on_row(confirmed).iloc[:, :limit]
   fig = go.Figure(
     layout=go.Layout(
@@ -109,6 +112,9 @@ def countries_deaths_over_threshold(deaths):
 def top_countries_deaths_over_threshold_and_aligned(deaths):
   align_on = 50
   limit = 10
+  deaths = deaths.assign(EU=deaths[['Austria', 'Belgium', 'Bulgaria', 'Croatia', 'Cyprus', 'Czechia', 'Denmark',
+ 'Estonia', 'Finland', 'France', 'Germany', 'Greece', 'Hungary', 'Ireland', 'Italy', 'Latvia', 'Lithuania', 'Luxembourg',
+ 'Malta', 'Netherlands', 'Poland', 'Portugal', 'Romania', 'Slovakia', 'Slovenia', 'Spain', 'Sweden']].sum(axis=1))
   deaths_over_threshold = utils.sort_columns_on_row(deaths).iloc[:, :limit]
 
   fig = go.Figure(
@@ -190,6 +196,9 @@ def deaths_over_threshold_and_aligned(deaths):
   threshold = 5
   align_on = 5
   limit = 40
+  deaths = deaths.assign(EU=deaths[['Austria', 'Belgium', 'Bulgaria', 'Croatia', 'Cyprus', 'Czechia', 'Denmark',
+ 'Estonia', 'Finland', 'France', 'Germany', 'Greece', 'Hungary', 'Ireland', 'Italy', 'Latvia', 'Lithuania', 'Luxembourg',
+ 'Malta', 'Netherlands', 'Poland', 'Portugal', 'Romania', 'Slovakia', 'Slovenia', 'Spain', 'Sweden']].sum(axis=1))
   deaths_over_threshold = utils.sort_columns_on_row(deaths).iloc[:, :limit]
 
   fig = go.Figure(
