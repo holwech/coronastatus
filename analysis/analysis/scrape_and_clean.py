@@ -49,7 +49,10 @@ data['plots']['daily_change2'] = fig.to_json()
 fig = plots.rate_vs_total(deaths, 10, 5, 'death', limit=40)
 data['plots']['peak_deaths'] = fig.to_json()
 
+fig = plots.top_deaths_per_time(deaths)
+data['plots']['top_deaths_per_time'] = fig.to_json()
+
 data['stats'] = stats.calc_stats(deaths, confirmed)
 
-with open('frontend/src/data/data.json', 'w') as f:
+with open('../../frontend/src/data/data.json', 'w') as f:
     json.dump(data, f)

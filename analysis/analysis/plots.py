@@ -584,6 +584,60 @@ def current_distribution(deaths):
   ))
   return fig
 
+def top_deaths_per_time(deaths, interval=7):
+  threshold = 20
+  df_diff = utils.sort_columns_on_row(deaths).diff().iloc[1:]
+  df_buckets = utils.bucket_values(df_diff, interval=interval, limit=threshold)
+  deaths_sorted = utils.sort_columns_on_row(df_buckets)
+  deaths_merged = deaths_sorted[deaths_sorted.columns[0:threshold]]
+  deaths_merged['Other'] = deaths_sorted[deaths_sorted.columns[threshold:]].sum(axis=1)
+  deaths_merged = deaths_merged.iloc[-1].sort_values(ascending=False)
+  fig = go.Figure(
+    layout=go.Layout(
+      title=go.layout.Title(text=f'Number of deaths by country - Last {interval} day(s)'),
+      paper_bgcolor='rgba(0,0,0,0)',
+      plot_bgcolor='rgba(0,0,0,0)',
+      font=dict(
+        family="Lato, Helvetica",
+        color="#333447"
+      ),
+      legend_orientation="v",
+      xaxis=go.layout.XAxis(
+        showgrid=False,
+        automargin=True,
+        gridwidth=1,
+        gridcolor='rgb(220,220,220)',
+      ),
+      yaxis=go.layout.YAxis(
+        showgrid=True,
+        automargin=True,
+        gridwidth=1,
+        gridcolor='rgb(220,220,220)',
+        tickformat=',.0',
+        side='right',
+        range=[0, deaths_merged.max()]
+      ),
+      margin={
+        'l': 0, 'r': 0, 'pad': 0
+      }
+    ),
+  )
+  text = zip(
+    deaths_merged.values,
+    [x for x in round(deaths_merged / deaths_merged.sum() * 1000) / 10],
+  )
+  fig.add_trace(go.Bar(
+    x=deaths_merged.index, 
+    y=deaths_merged,
+    text=[f"{x[0]:.0f} ({str(x[1])}%)" for x in text],
+    textposition='auto',
+    marker=dict(
+        color=[utils.get_color(c)[0] for c in deaths_merged.index]
+    ),
+    orientation='v'
+  ))
+  return fig
+
 def daily_change(df, interval=1):
   limit = 10
   df_diff = utils.sort_columns_on_row(df).diff().iloc[1:]
