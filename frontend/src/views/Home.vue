@@ -84,6 +84,14 @@
       <div class="row">
         <div class="col-12 center" style="padding-bottom: 50px;"><span class="material-icons" style="font-size: 100px;">keyboard_arrow_down</span></div>
       </div>
+      <DataElement figureName="top_deaths_per_time">
+        <div class="left" v-html="content[8]"></div>
+        <template v-slot:footer>
+          <p v-if="isMobile" style="color:red;">
+            For mobile users - Click the lines to reveal country.
+          </p>
+        </template>
+      </DataElement>
       <DataElement figureName="figure_1">
         <div class="left" v-html="content[0]"></div>
         <template v-slot:footer>
@@ -138,6 +146,7 @@ import info4 from '@/posts/info4.md';
 import info5 from '@/posts/info5.md';
 import dailyChange from '@/posts/daily_change.md';
 import dailyChange2 from '@/posts/daily_change2.md';
+import topDaily from '@/posts/top_daily.md'
 import peak from '@/posts/peak.md';
 
 @Component({
@@ -150,7 +159,7 @@ import peak from '@/posts/peak.md';
 export default class Home extends Vue {
   stats = data['stats'];
   isMobile = false;
-  content = [info1, info2, info3, info4, info5, dailyChange, dailyChange2, peak].map(info => marked(info));
+  content = [info1, info2, info3, info4, info5, dailyChange, dailyChange2, peak, topDaily].map(info => marked(info));
 
   get countryStats() {
     return Object.entries(this.stats['change_deaths'])

@@ -4,7 +4,6 @@
       <div class="col-12">
         <slot></slot>
         <slot name="footer"></slot>
-        <hr>
       </div>
     </div>
     <div class="row">
