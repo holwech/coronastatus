@@ -704,12 +704,12 @@ def rate_vs_total(df, x_lower, y_lower, type_name, limit=35, window=7):
       marker_color=color,
       line=dict(width=1.5, dash='solid' if show else 'dot')
     ))
-  fig.add_trace(go.Scatter(
-    x=[2, 1000000],
-    y=[1, 100000],
-    name='Time of lockdown',
-    mode="lines",
-    marker_color="red",
-    line=dict(dash="dot", width=4)
-  ))
+  # fig.add_trace(go.Scatter(
+  #   x=[2, 1000000],
+  #   y=[1, 100000],
+  #   name='Time of lockdown',
+  #   mode="lines",
+  #   marker_color="red",
+  #   line=dict(dash="dot", width=4)
+  # ))
   return fig
