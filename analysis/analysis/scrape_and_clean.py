@@ -40,10 +40,10 @@ data['plots']['deaths_area'] = fig.to_json()
 fig = plots.current_distribution(deaths)
 data['plots']['deaths_pie_chart'] = fig.to_json()
 
-fig = plots.daily_change(deaths, 3)
+fig = plots.daily_change(deaths, 7)
 data['plots']['daily_change'] = fig.to_json()
 
-fig = plots.daily_change(deaths.loc[pd.to_datetime(deaths.index) >= pd.to_datetime('2020-03-01')], 1)
+fig = plots.daily_change(deaths.loc[pd.to_datetime(deaths.index) >= pd.to_datetime('2020-03-01')], 3)
 data['plots']['daily_change2'] = fig.to_json()
 
 fig = plots.rate_vs_total(deaths, 10, 5, 'death', limit=40)
