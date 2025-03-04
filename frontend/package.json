@@ -10,7 +10,7 @@
   "dependencies": {
     "core-js": "^3.6.4",
     "marked": "^0.8.1",
-    "plotly.js": "^1.52.3",
+    "plotly.js": "^1.58.5",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.3",
     "vue-property-decorator": "^8.4.1",
